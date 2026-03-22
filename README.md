@@ -1,7 +1,7 @@
-## Bistro Tiffin & Health
+## THE HEAFFIN
 Team: Shadow Stack
 
-Bistro Tiffin & Health is a web-based application designed to integrate daily meal planning with basic health tracking. The platform allows users to estimate their calorie requirements, log food intake, and receive a structured view of their daily nutrition. It also provides a simple mechanism to place tiffin orders based on nutritional needs.
+The Heaffin is a web-based application designed to integrate daily meal planning with basic health tracking. The platform allows users to estimate their calorie requirements, log food intake, and receive a structured view of their daily nutrition. It also provides a simple mechanism to place tiffin orders based on nutritional needs.
 
 ## Overview
 
