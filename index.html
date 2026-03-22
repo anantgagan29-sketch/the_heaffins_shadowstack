@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bistro Tiffin & Health</title>
+    <style>
+        /* General Styling */
+        body {
+            margin: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #fdfaf6;
+            color: #333;
+        }
+        
+        /* Bistro Style Login Page */
+        #login-page {
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url('https://images.unsplash.com/photo-1414235077428-338989a2e8c0?ixlib=rb-1.2.1&auto=format&fit=crop&w=1950&q=80') center/cover;
+        }
+        .login-card {
+            background: white;
+            padding: 40px;
+            border-radius: 10px;
+            text-align: center;
+            width: 350px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+        }
+        .login-card h1 {
+            font-family: 'Georgia', serif;
+            color: #d35400;
+            margin-bottom: 5px;
+        }
+        .login-card p {
+            color: #7f8c8d;
+            margin-bottom: 25px;
+        }
+        .login-card input {
+            width: 100%;
+            padding: 12px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-sizing: border-box;
+        }
+        .login-card button {
+            width: 100%;
+            padding: 12px;
+            background-color: #d35400;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            margin-top: 15px;
+        }
+        .login-card button:hover {
+            background-color: #e67e22;
+        }
+
+        /* Main Dashboard Styling */
+        #dashboard {
+            display: none;
+            padding: 20px;
+            max-width: 1200px;
+            margin: auto;
+        }
+        .header {
+            text-align: center;
+            padding: 20px 0;
+            font-family: 'Georgia', serif;
+            color: #d35400;
+        }
+        .grid-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+        .card {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+            border-top: 4px solid #d35400;
+        }
+        .card h2 {
+            margin-top: 0;
+            font-size: 18px;
+        }
+        
+        /* Form & Inputs */
+        label { display: block; margin-top: 10px; font-weight: bold;}
+        input[type="number"], select, input[type="text"] {
+            width: 100%;
+            padding: 8px;
+            margin-top: 5px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        button.action-btn {
+            background: #27ae60;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            margin-top: 15px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        /* Chatbot */
+        .chat-box {
+            height: 200px;
+            border: 1px solid #eee;
+            background: #fafafa;
+            overflow-y: auto;
+            padding: 10px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+        }
+        .chat-message { margin: 5px 0; padding: 8px; border-radius: 5px;}
+        .user-msg { background: #e0f7fa; text-align: right; }
+        .ai-msg { background: #ffe0b2; text-align: left; }
+        
+        /* Report */
+        .report-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid #eee;
+        }
+
+        /* Map */
+        #map-container {
+            width: 100%;
+            height: 250px;
+            background: #e9e9e9;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 5px;
+            overflow: hidden;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="login-page">
+        <div class="login-card">
+            <h1>Bistro Tiffin</h1>
+            <p>Catering & Health Tracker</p>
+            <input type="email" placeholder="Email Address" required>
+            <input type="password" placeholder="Password" required>
+            <button onclick="login()">Sign In</button>
+        </div>
+    </div>
+
+    <div id="dashboard">
+        <div class="header">
+            <h1>Welcome to Bistro Tiffin & Health</h1>
+        </div>
+
+        <div class="grid-container">
+            
+            <div class="card">
+                <h2>Calculate Required Calories</h2>
+                <label>Gender:</label>
+                <select id="gender">
+                    <option value="male">Male</option>
+                    <option value="female">Female</option>
+                </select>
+                <label>Age:</label>
+                <input type="number" id="age" placeholder="Years">
+                <label>Weight (kg):</label>
+                <input type="number" id="weight" placeholder="kg">
+                <label>Height (cm):</label>
+                <input type="number" id="height" placeholder="cm">
+                <button class="action-btn" onclick="calculateCalories()">Calculate Need</button>
+                <p id="calorie-result" style="font-weight: bold; color: #d35400; margin-top: 15px;"></p>
+            </div>
+
+            <div class="card">
+                <h2>AI Meal Tracker Chat</h2>
+                <div class="chat-box" id="chat-box">
+                    <div class="chat-message ai-msg">Hi! What did you eat today?</div>
+                </div>
+                <div style="display: flex; gap: 10px;">
+                    <input type="text" id="chat-input" placeholder="e.g., I ate 2 paneer parathas...">
+                    <button class="action-btn" style="margin-top: 0;" onclick="sendMessage()">Send</button>
+                </div>
+            </div>
+
+            <div class="card">
+                <h2>Today's Nutrition Report</h2>
+                <div class="report-item">
+                    <span>Calories Consumed:</span>
+                    <strong id="rep-calories">0 kcal</strong>
+                </div>
+                <div class="report-item">
+                    <span>Protein Intake:</span>
+                    <strong id="rep-protein">0 g</strong>
+                </div>
+                <div class="report-item">
+                    <span>Carbs Intake:</span>
+                    <strong id="rep-carbs">0 g</strong>
+                </div>
+                <div class="report-item">
+                    <span>Fats Intake:</span>
+                    <strong id="rep-fats">0 g</strong>
+                </div>
+                <button class="action-btn" onclick="orderTiffin()">Order Tomorrow's Tiffin based on Macros</button>
+            </div>
+
+            <div class="card">
+                <h2>Delivery Location Tracker</h2>
+                <button class="action-btn" style="margin-top: 0; margin-bottom: 15px; width: 100%;" onclick="getLocation()">Get Current Location</button>
+                <div id="map-container">
+                    Map will load here...
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        // Switch from Login to Dashboard
+        function login() {
+            document.getElementById('login-page').style.display = 'none';
+            document.getElementById('dashboard').style.display = 'block';
+        }
+
+        // Calculate Calories using Mifflin-St Jeor Equation
+        function calculateCalories() {
+            let gender = document.getElementById('gender').value;
+            let age = document.getElementById('age').value;
+            let weight = document.getElementById('weight').value;
+            let height = document.getElementById('height').value;
+
+            if(!age || !weight || !height) {
+                alert("Please fill all fields");
+                return;
+            }
+
+            let bmr;
+            if (gender === 'male') {
+                bmr = (10 * weight) + (6.25 * height) - (5 * age) + 5;
+            } else {
+                bmr = (10 * weight) + (6.25 * height) - (5 * age) - 161;
+            }
+
+            // Multiplying by a standard activity factor of 1.2 (Sedentary)
+            let dailyCalories = Math.round(bmr * 1.2);
+            document.getElementById('calorie-result').innerText = `Your estimated daily requirement is ${dailyCalories} calories.`;
+        }
+
+        // Simulated AI Chatbot & Report Update
+        let totalCalories = 0;
+        let totalProtein = 0;
+        let totalCarbs = 0;
+        let totalFats = 0;
+
+        function sendMessage() {
+            let input = document.getElementById('chat-input').value;
+            if(!input) return;
+
+            let chatBox = document.getElementById('chat-box');
+            
+            // User message
+            chatBox.innerHTML += `<div class="chat-message user-msg">${input}</div>`;
+            document.getElementById('chat-input').value = "";
+
+            // Simulate AI Processing
+            setTimeout(() => {
+                // In a real app, you would send 'input' to an AI API here.
+                // We are hardcoding a simulated response for the prototype.
+                let addedCals = Math.floor(Math.random() * 300) + 200;
+                let addedProtein = Math.floor(Math.random() * 15) + 5;
+                let addedCarbs = Math.floor(Math.random() * 40) + 15;
+                let addedFats = Math.floor(Math.random() * 10) + 5;
+
+                totalCalories += addedCals;
+                totalProtein += addedProtein;
+                totalCarbs += addedCarbs;
+                totalFats += addedFats;
+
+                updateReport();
+
+                chatBox.innerHTML += `<div class="chat-message ai-msg">I've logged that! That's roughly ${addedCals} calories and ${addedProtein}g of protein. I've updated your daily report.</div>`;
+                chatBox.scrollTop = chatBox.scrollHeight;
+            }, 1000);
+        }
+
+        function updateReport() {
+            document.getElementById('rep-calories').innerText = totalCalories + " kcal";
+            document.getElementById('rep-protein').innerText = totalProtein + " g";
+            document.getElementById('rep-carbs').innerText = totalCarbs + " g";
+            document.getElementById('rep-fats').innerText = totalFats + " g";
+        }
+
+        // Get Live Location and Render Map
+        function getLocation() {
+            const mapContainer = document.getElementById('map-container');
+            mapContainer.innerHTML = "Fetching location...";
+
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(showPosition, showError);
+            } else {
+                mapContainer.innerHTML = "Geolocation is not supported by this browser.";
+            }
+        }
+
+        function showPosition(position) {
+            let lat = position.coords.latitude;
+            let lon = position.coords.longitude;
+            
+            // Using OpenStreetMap embedded iframe for an easy map display without API keys
+            const mapContainer = document.getElementById('map-container');
+            mapContainer.innerHTML = `<iframe 
+                width="100%" 
+                height="100%" 
+                frameborder="0" 
+                scrolling="no" 
+                marginheight="0" 
+                marginwidth="0" 
+                src="https://www.openstreetmap.org/export/embed.html?bbox=${lon-0.01}%2C${lat-0.01}%2C${lon+0.01}%2C${lat+0.01}&amp;layer=mapnik&amp;marker=${lat}%2C${lon}">
+            </iframe>`;
+        }
+
+        function showError(error) {
+            const mapContainer = document.getElementById('map-container');
+            switch(error.code) {
+                case error.PERMISSION_DENIED:
+                    mapContainer.innerHTML = "User denied the request for Geolocation."
+                    break;
+                case error.POSITION_UNAVAILABLE:
+                    mapContainer.innerHTML = "Location information is unavailable."
+                    break;
+                case error.TIMEOUT:
+                    mapContainer.innerHTML = "The request to get user location timed out."
+                    break;
+                case error.UNKNOWN_ERROR:
+                    mapContainer.innerHTML = "An unknown error occurred."
+                    break;
+            }
+        }
+
+        function orderTiffin() {
+            alert("This would send your macro requirements to the kitchen for tomorrow's customized tiffin!");
+        }
+    </script>
+</body>
+</html>
