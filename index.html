@@ -3,353 +3,834 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>THE HEAFFIN</title>
+    <title>TiffinBox - Buyer/Seller Platform</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        /* General Styling */
-        body {
-            margin: 0;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #fdfaf6;
-            color: #333;
-        }
-        
-        /*  Style Login Page */
-        #login-page {
-            height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url('https://images.unsplash.com/photo-1414235077428-338989a2e8c0?ixlib=rb-1.2.1&auto=format&fit=crop&w=1950&q=80') center/cover;
-        }
-        .login-card {
-            background: white;
-            padding: 40px;
-            border-radius: 10px;
-            text-align: center;
-            width: 350px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.3);
-        }
-        .login-card h1 {
-            font-family: 'Georgia', serif;
-            color: #d35400;
-            margin-bottom: 5px;
-        }
-        .login-card p {
-            color: #7f8c8d;
-            margin-bottom: 25px;
-        }
-        .login-card input {
-            width: 100%;
-            padding: 12px;
-            margin: 10px 0;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            box-sizing: border-box;
-        }
-        .login-card button {
-            width: 100%;
-            padding: 12px;
-            background-color: #d35400;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            font-size: 16px;
-            cursor: pointer;
-            margin-top: 15px;
-        }
-        .login-card button:hover {
-            background-color: #e67e22;
-        }
-
-        /* Main Dashboard Styling */
-        #dashboard {
-            display: none;
-            padding: 20px;
-            max-width: 1200px;
-            margin: auto;
-        }
-        .header {
-            text-align: center;
-            padding: 20px 0;
-            font-family: 'Georgia', serif;
-            color: #d35400;
-        }
-        .grid-container {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 20px;
-        }
-        .card {
-            background: white;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
-            border-top: 4px solid #d35400;
-        }
-        .card h2 {
-            margin-top: 0;
-            font-size: 18px;
-        }
-        
-        /* Form & Inputs */
-        label { display: block; margin-top: 10px; font-weight: bold;}
-        input[type="number"], select, input[type="text"] {
-            width: 100%;
-            padding: 8px;
-            margin-top: 5px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-            box-sizing: border-box;
-        }
-        button.action-btn {
-            background: #27ae60;
-            color: white;
-            border: none;
-            padding: 10px 15px;
-            margin-top: 15px;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-
-        /* Chatbot */
-        .chat-box {
-            height: 200px;
-            border: 1px solid #eee;
-            background: #fafafa;
-            overflow-y: auto;
-            padding: 10px;
-            margin-bottom: 10px;
-            border-radius: 5px;
-        }
-        .chat-message { margin: 5px 0; padding: 8px; border-radius: 5px;}
-        .user-msg { background: #e0f7fa; text-align: right; }
-        .ai-msg { background: #ffe0b2; text-align: left; }
-        
-        /* Report */
-        .report-item {
-            display: flex;
-            justify-content: space-between;
-            padding: 10px 0;
-            border-bottom: 1px solid #eee;
-        }
-
-        /* Map */
-        #map-container {
-            width: 100%;
-            height: 250px;
-            background: #e9e9e9;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: 5px;
-            overflow: hidden;
-        }
+        * { font-family: 'Outfit', sans-serif; }
+        .gradient-orange { background: linear-gradient(135deg, #ff6b35 0%, #ff8c42 50%, #ffa726 100%); }
+        .card-hover { transition: all 0.3s ease; }
+        .card-hover:hover { transform: translateY(-4px); box-shadow: 0 20px 40px -10px rgba(255, 107, 53, 0.2); }
+        .slide-in { animation: slideIn 0.3s ease-out; }
+        @keyframes slideIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .pulse-ring { animation: pulse-ring 2s cubic-bezier(0.215, 0.61, 0.355, 1) infinite; }
+        @keyframes pulse-ring { 0% { transform: scale(0.8); opacity: 0.5; } 100% { transform: scale(1.3); opacity: 0; } }
+        .progress-bar { background: linear-gradient(90deg, #ff6b35 0%, #ff8c42 100%); background-size: 200% 100%; animation: progress 2s ease infinite; }
+        @keyframes progress { 0% { background-position: 100% 0; } 100% { background-position: -100% 0; } }
     </style>
 </head>
-<body>
+<body class="bg-gray-50">
+    <div id="root"></div>
 
-    <div id="login-page">
-        <div class="login-card">
-            <h1>THE HEAFFIN</h1>
-            <p>Catering & Health Tracker</p>
-            <input type="email" placeholder="Email Address" required>
-            <input type="password" placeholder="Password" required>
-            <button onclick="login()">Sign In</button>
-        </div>
-    </div>
+    <script type="text/babel">
+        const { useState, useEffect } = React;
 
-    <div id="dashboard">
-        <div class="header">
-            <h1>Welcome to Heaffins!!</h1>
-        </div>
+        // Inline SVG Icons
+        const Icon = ({ name, size = 20, className = "" }) => {
+            const icons = {
+                Utensils: <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M3 2v7c0 1.1.9 2 2 2h4a2 2 0 0 0 2-2V2"/><path d="M7 2v20"/><path d="M21 15V2v0a5 5 0 0 0-5 5v6c0 1.1.9 2 2 2h3Zm0 0v7"/></svg>,
+                User: <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>,
+                Building2: <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M10 12h4"/><path d="M10 8h4"/><path d="M14 21v-3a2 2 0 0 0-4 0v3"/><path d="M6 10H4a2 2 0 0 0-2 2v7a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-2"/><path d="M6 21V5a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v16"/></svg>,
+                Mail: <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>,
+                Lock: <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>,
+                Phone: <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>,
+                ArrowRight: <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>,
+                X: <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>,
+                Plus: <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M5 12h14"/><path d="M12 5v14"/></svg>,
+                Package: <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="m7.5 4.27 9 5.15"/><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/><path d="m3.3 7 8.7 5 8.7-5"/><path d="M12 22V12"/></svg>,
+                Settings: <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.1a2 2 0 0 1-1-1.72v-.51a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg>,
+                LayoutDashboard: <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><rect width="7" height="9" x="3" y="3" rx="1"/><rect width="7" height="5" x="14" y="3" rx="1"/><rect width="7" height="9" x="14" y="12" rx="1"/><rect width="7" height="5" x="3" y="16" rx="1"/></svg>,
+                Search: <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>,
+                Bell: <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg>,
+                MapPin: <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>,
+                Star: <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>,
+                Sunrise: <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M12 2v8"/><path d="m4.93 10.93 1.41 1.41"/><path d="M2 18h2"/><path d="M20 18h2"/><path d="m19.07 10.93-1.41 1.41"/><path d="M22 22H2"/><path d="m8 6 4-4 4 4"/><path d="M16 18a4 4 0 0 0-8 0"/></svg>,
+                Sun: <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/></svg>,
+                Coffee: <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M10 2v2"/><path d="M14 2v2"/><path d="M16 8a1 1 0 0 1 1 1v8a4 4 0 0 1-4 4H7a4 4 0 0 1-4-4V9a1 1 0 0 1 1-1h14a4 4 0 1 1 0 8h-1"/><path d="M6 2v2"/></svg>,
+                Moon: <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>,
+                Calendar: <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M8 2v4"/><path d="M16 2v4"/><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M3 10h18"/></svg>,
+                Wallet: <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M19 7V4a1 1 0 0 0-1-1H5a2 2 0 0 0 0 4h15a1 1 0 0 1 1 1v4h-3a2 2 0 0 0 0 4h3a1 1 0 0 0 1-1v-2a1 1 0 0 0-1-1"/><path d="M3 5v14a2 2 0 0 0 2 2h15a1 1 0 0 0 1-1v-4"/></svg>,
+                Zap: <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>,
+                Clock: <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>,
+                ChefHat: <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M17 21a1 1 0 0 0 1-1v-5.35c0-.457.316-.844.727-1.041a4 4 0 0 0-2.134-7.589 5 5 0 0 0-9.186 0 4 4 0 0 0-2.134 7.588c.411.198.727.585.727 1.041V20a1 1 0 0 0 1 1Z"/><path d="M6 17h12"/></svg>,
+                CheckCircle: <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><path d="m9 11 3 3L22 4"/></svg>,
+                Bike: <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><circle cx="18.5" cy="17.5" r="3.5"/><circle cx="5.5" cy="17.5" r="3.5"/><circle cx="15" cy="5" r="1"/><path d="M12 17.5V14l-3-3 4-3 2 3h2"/></svg>,
+                Gift: <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><rect x="3" y="8" width="18" height="4" rx="1"/><path d="M12 8v13"/><path d="M19 12v7a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2v-7"/><path d="M7.5 8a2.5 2.5 0 0 1 0-5 4.8 4.8 0 0 1 4.5 5v0h-4.5v0Z"/><path d="M16.5 8v0h-4.5v0a4.8 4.8 0 0 1 4.5-5 2.5 2.5 0 0 1 0 5Z"/></svg>,
+                Filter: <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/></svg>,
+                Download: <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>,
+                RotateCcw: <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>,
+                ArrowDownLeft: <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M17 7 7 17"/><path d="M17 17H7V7"/></svg>,
+                ArrowUpRight: <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M7 7h10v10"/><path d="M7 17 17 7"/></svg>,
+                MessageCircle: <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/></svg>,
+                SlidersHorizontal: <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><line x1="21" x2="14" y1="4" y2="4"/><line x1="10" x2="3" y1="4" y2="4"/><line x1="21" x2="12" y1="12" y2="12"/><line x1="8" x2="3" y1="12" y2="12"/><line x1="21" x2="16" y1="20" y2="20"/><line x1="12" x2="3" y1="20" y2="20"/><line x1="14" x2="14" y1="2" y2="6"/><line x1="8" x2="8" y1="10" y2="14"/><line x1="16" x2="16" y1="18" y2="22"/></svg>,
+                CreditCard: <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><rect width="20" height="14" x="2" y="5" rx="2"/><line x1="2" x2="22" y1="10" y2="10"/></svg>,
+                Smartphone: <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><rect width="14" height="20" x="5" y="2" rx="2" ry="2"/><path d="M12 18h.01"/></svg>
+            };
+            return icons[name] || <span>•</span>;
+        };
 
-        <div class="grid-container">
-            
-            <div class="card">
-                <h2>Calculate Required Calories</h2>
-                <label>Gender:</label>
-                <select id="gender">
-                    <option value="male">Male</option>
-                    <option value="female">Female</option>
-                </select>
-                <label>Age:</label>
-                <input type="number" id="age" placeholder="Years">
-                <label>Weight (kg):</label>
-                <input type="number" id="weight" placeholder="kg">
-                <label>Height (cm):</label>
-                <input type="number" id="height" placeholder="cm">
-                <button class="action-btn" onclick="calculateCalories()">Calculate Need</button>
-                <p id="calorie-result" style="font-weight: bold; color: #d35400; margin-top: 15px;"></p>
-            </div>
-
-            <div class="card">
-                <h2>AI Meal Tracker Chat</h2>
-                <div class="chat-box" id="chat-box">
-                    <div class="chat-message ai-msg">Hi! What did you eat today?</div>
-                </div>
-                <div style="display: flex; gap: 10px;">
-                    <input type="text" id="chat-input" placeholder="e.g., I ate 2 paneer parathas...">
-                    <button class="action-btn" style="margin-top: 0;" onclick="sendMessage()">Send</button>
-                </div>
-            </div>
-
-            <div class="card">
-                <h2>Today's Nutrition Report</h2>
-                <div class="report-item">
-                    <span>Calories Consumed:</span>
-                    <strong id="rep-calories">0 kcal</strong>
-                </div>
-                <div class="report-item">
-                    <span>Protein Intake:</span>
-                    <strong id="rep-protein">0 g</strong>
-                </div>
-                <div class="report-item">
-                    <span>Carbs Intake:</span>
-                    <strong id="rep-carbs">0 g</strong>
-                </div>
-                <div class="report-item">
-                    <span>Fats Intake:</span>
-                    <strong id="rep-fats">0 g</strong>
-                </div>
-                <button class="action-btn" onclick="orderTiffin()">Order Tomorrow's Tiffin based on Macros</button>
-            </div>
-
-            <div class="card">
-                <h2>Delivery Location Tracker</h2>
-                <button class="action-btn" style="margin-top: 0; margin-bottom: 15px; width: 100%;" onclick="getLocation()">Get Current Location</button>
-                <div id="map-container">
-                    Map will load here...
-                </div>
-            </div>
-
-        </div>
-    </div>
-
-    <script>
-        // Switch from Login to Dashboard
-        function login() {
-            document.getElementById('login-page').style.display = 'none';
-            document.getElementById('dashboard').style.display = 'block';
-        }
-
-        // Calculate Calories using Mifflin-St Jeor Equation
-        function calculateCalories() {
-            let gender = document.getElementById('gender').value;
-            let age = document.getElementById('age').value;
-            let weight = document.getElementById('weight').value;
-            let height = document.getElementById('height').value;
-
-            if(!age || !weight || !height) {
-                alert("Please fill all fields");
-                return;
+        // Initialize Store
+        const initializeStore = () => {
+            const existingStore = localStorage.getItem('tiffinBoxStore');
+            if (!existingStore) {
+                const defaultStore = {
+                    users: [],
+                    currentUser: null,
+                    userRole: null,
+                    cart: [],
+                    orders: [],
+                    sellers: [],
+                    sellerServices: []
+                };
+                localStorage.setItem('tiffinBoxStore', JSON.stringify(defaultStore));
+                return defaultStore;
             }
+            const store = JSON.parse(existingStore);
+            if (!store.sellers) store.sellers = [];
+            if (!store.sellerServices) store.sellerServices = [];
+            if (!store.userRole) store.userRole = null;
+            localStorage.setItem('tiffinBoxStore', JSON.stringify(store));
+            return store;
+        };
 
-            let bmr;
-            if (gender === 'male') {
-                bmr = (10 * weight) + (6.25 * height) - (5 * age) + 5;
-            } else {
-                bmr = (10 * weight) + (6.25 * height) - (5 * age) - 161;
+        // UI Components
+        const Button = ({ children, variant = "primary", className = "", onClick, type = "button", disabled }) => {
+            const baseStyles = "px-6 py-3 rounded-xl font-medium transition-all duration-200 flex items-center gap-2 justify-center";
+            const variants = {
+                primary: "bg-orange-500 text-white hover:bg-orange-600 shadow-lg shadow-orange-500/30",
+                secondary: "bg-white text-gray-700 border-2 border-gray-200 hover:border-orange-500 hover:text-orange-500",
+                outline: "border-2 border-orange-500 text-orange-500 hover:bg-orange-50",
+                ghost: "text-gray-600 hover:text-orange-500 hover:bg-orange-50"
+            };
+            return (
+                <button type={type} onClick={onClick} disabled={disabled} className={`${baseStyles} ${variants[variant]} ${className} ${disabled ? 'opacity-50 cursor-not-allowed' : ''}`}>
+                    {children}
+                </button>
+            );
+        };
+
+        const Badge = ({ children, type }) => {
+            const styles = {
+                veg: "bg-green-100 text-green-700 border-green-200",
+                "non-veg": "bg-red-100 text-red-700 border-red-200",
+                healthy: "bg-emerald-100 text-emerald-700",
+                budget: "bg-blue-100 text-blue-700",
+                premium: "bg-purple-100 text-purple-700",
+                gym: "bg-orange-100 text-orange-700"
+            };
+            return <span className={`px-3 py-1 rounded-full text-xs font-semibold border ${styles[type] || styles.healthy}`}>{children}</span>;
+        };
+
+        // Role Selection Screen
+        const RoleSelection = ({ onRoleSelect }) => {
+            return (
+                <div className="min-h-screen flex items-center justify-center p-4 bg-gradient-to-br from-orange-50 via-white to-orange-50">
+                    <div className="w-full max-w-md text-center">
+                        <div className="w-20 h-20 gradient-orange rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-xl shadow-orange-500/30">
+                            <Icon name="Utensils" size={40} className="text-white" />
+                        </div>
+                        <h1 className="text-4xl font-bold text-gray-900 mb-2">TiffinBox</h1>
+                        <p className="text-gray-600 mb-8">Choose how you want to use the platform</p>
+                        
+                        <div className="space-y-4">
+                            <button onClick={() => onRoleSelect('buyer')} className="w-full p-6 bg-white rounded-2xl border-2 border-gray-200 hover:border-orange-500 hover:shadow-lg transition-all group">
+                                <div className="w-16 h-16 bg-orange-100 rounded-full flex items-center justify-center mx-auto mb-3 group-hover:bg-orange-200">
+                                    <Icon name="User" size={32} className="text-orange-600" />
+                                </div>
+                                <h3 className="text-xl font-bold text-gray-900 mb-1">I'm a Buyer</h3>
+                                <p className="text-sm text-gray-600">Browse and order tiffin services</p>
+                            </button>
+                            
+                            <button onClick={() => onRoleSelect('seller')} className="w-full p-6 bg-white rounded-2xl border-2 border-gray-200 hover:border-orange-500 hover:shadow-lg transition-all group">
+                                <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-3 group-hover:bg-red-200">
+                                    <Icon name="Building2" size={32} className="text-red-600" />
+                                </div>
+                                <h3 className="text-xl font-bold text-gray-900 mb-1">I'm a Seller</h3>
+                                <p className="text-sm text-gray-600">Manage your tiffin business</p>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            );
+        };
+
+        // Auth Screen
+        const AuthScreen = ({ onLogin, initialRole }) => {
+            const [isSignup, setIsSignup] = useState(false);
+            const [formData, setFormData] = useState({ email: "", password: "", name: "", phone: "", role: initialRole || 'buyer' });
+            const [error, setError] = useState('');
+
+            const handleSubmit = (e) => {
+                e.preventDefault();
+                const store = JSON.parse(localStorage.getItem('tiffinBoxStore'));
+                
+                if (isSignup) {
+                    const existingUser = store.users.find(u => u.email === formData.email);
+                    if (existingUser) {
+                        setError('Email already registered');
+                        return;
+                    }
+                    
+                    const newUser = { id: Date.now(), ...formData, createdAt: new Date().toISOString() };
+                    store.users.push(newUser);
+                    store.currentUser = newUser;
+                    store.userRole = formData.role;
+                    
+                    if (formData.role === 'seller') {
+                        store.sellers.push({ id: Date.now(), userId: newUser.id, businessName: formData.name, isVerified: false, services: [], orders: [] });
+                    }
+                    
+                    localStorage.setItem('tiffinBoxStore', JSON.stringify(store));
+                    onLogin(newUser, formData.role);
+                } else {
+                    const user = store.users.find(u => u.email === formData.email && u.password === formData.password);
+                    if (!user) {
+                        setError('Invalid credentials');
+                        return;
+                    }
+                    if (initialRole && user.role !== initialRole) {
+                        setError(`This account is registered as a ${user.role}. Please select the correct role.`);
+                        return;
+                    }
+                    store.currentUser = user;
+                    store.userRole = user.role;
+                    localStorage.setItem('tiffinBoxStore', JSON.stringify(store));
+                    onLogin(user, user.role);
+                }
+            };
+
+            return (
+                <div className="min-h-screen flex items-center justify-center p-4 bg-gradient-to-br from-orange-50 via-white to-orange-50">
+                    <div className="w-full max-w-md">
+                        <div className="text-center mb-8">
+                            <div className="w-20 h-20 gradient-orange rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-xl shadow-orange-500/30">
+                                <Icon name="Utensils" size={40} className="text-white" />
+                            </div>
+                            <h1 className="text-4xl font-bold text-gray-900 mb-2">TiffinBox</h1>
+                            <p className="text-gray-600">{initialRole === 'seller' ? 'Seller Portal' : 'Student Meal Platform'}</p>
+                            <div className="mt-2 inline-flex items-center gap-2 px-3 py-1 bg-orange-100 rounded-full">
+                                <span className="w-2 h-2 rounded-full bg-orange-500"></span>
+                                <span className="text-sm font-medium text-orange-700 capitalize">{initialRole} Mode</span>
+                            </div>
+                        </div>
+
+                        <div className="bg-white/95 backdrop-blur rounded-3xl p-8 shadow-2xl border border-orange-100">
+                            <h2 className="text-2xl font-bold mb-6 text-center">{isSignup ? `Create ${initialRole} Account` : "Welcome Back"}</h2>
+                            {error && <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-xl text-red-600 text-sm">{error}</div>}
+                            
+                            <form onSubmit={handleSubmit} className="space-y-4">
+                                {isSignup && (
+                                    <>
+                                        <div className="relative">
+                                            <span className="absolute left-4 top-3.5 text-gray-400"><Icon name="User" size={20} /></span>
+                                            <input type="text" placeholder="Full Name" required className="w-full pl-12 pr-4 py-3 rounded-xl border-2 border-gray-200 focus:border-orange-500 focus:outline-none" value={formData.name} onChange={(e) => setFormData({...formData, name: e.target.value})} />
+                                        </div>
+                                        <div className="relative">
+                                            <span className="absolute left-4 top-3.5 text-gray-400"><Icon name="Phone" size={20} /></span>
+                                            <input type="tel" placeholder="Phone Number" required className="w-full pl-12 pr-4 py-3 rounded-xl border-2 border-gray-200 focus:border-orange-500 focus:outline-none" value={formData.phone} onChange={(e) => setFormData({...formData, phone: e.target.value})} />
+                                        </div>
+                                    </>
+                                )}
+                                <div className="relative">
+                                    <span className="absolute left-4 top-3.5 text-gray-400"><Icon name="Mail" size={20} /></span>
+                                    <input type="email" placeholder="Email Address" required className="w-full pl-12 pr-4 py-3 rounded-xl border-2 border-gray-200 focus:border-orange-500 focus:outline-none" value={formData.email} onChange={(e) => setFormData({...formData, email: e.target.value})} />
+                                </div>
+                                <div className="relative">
+                                    <span className="absolute left-4 top-3.5 text-gray-400"><Icon name="Lock" size={20} /></span>
+                                    <input type="password" placeholder="Password" required className="w-full pl-12 pr-4 py-3 rounded-xl border-2 border-gray-200 focus:border-orange-500 focus:outline-none" value={formData.password} onChange={(e) => setFormData({...formData, password: e.target.value})} />
+                                </div>
+
+                                <Button className="w-full" type="submit">{isSignup ? "Create Account" : "Sign In"}<Icon name="ArrowRight" size={18} /></Button>
+                            </form>
+
+                            <div className="mt-6 text-center">
+                                <p className="text-gray-600">{isSignup ? "Already have an account?" : "Don't have an account?"}<button onClick={() => {setIsSignup(!isSignup); setError('');}} className="ml-2 text-orange-500 font-semibold hover:underline">{isSignup ? "Sign In" : "Sign Up"}</button></p>
+                            </div>
+                            <div className="mt-4 text-center"><button onClick={() => window.location.reload()} className="text-sm text-gray-500 hover:text-orange-500">← Back to role selection</button></div>
+                        </div>
+                    </div>
+                </div>
+            );
+        };
+
+        // Mock Data for Buyers
+        const defaultProviders = [
+            {
+                id: 1,
+                name: "Campus Cravings",
+                rating: 4.8,
+                reviews: 234,
+                pricePerWeek: 899,
+                type: "veg",
+                tags: ["Healthy", "Budget", "Organic"],
+                image: "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=400",
+                description: "Home-style vegetarian meals with organic ingredients sourced from local farms.",
+                weeklyMenu: {
+                    Monday: { breakfast: "Poha & Tea", lunch: "Dal, Rice, Sabzi, Roti", snacks: "Samosa & Chai", dinner: "Paneer Curry, Rice, Roti" },
+                    Tuesday: { breakfast: "Idli Sambar", lunch: "Rajma Chawal", snacks: "Bhel Puri", dinner: "Mixed Veg, Dal, Roti" },
+                    Wednesday: { breakfast: "Paratha & Curd", lunch: "Chole Bhature", snacks: "Fruit Bowl", dinner: "Dal Tadka, Rice, Roti" },
+                    Thursday: { breakfast: "Upma", lunch: "Kadhi Pakoda, Rice", snacks: "Vada Pav", dinner: "Matar Paneer, Roti" },
+                    Friday: { breakfast: "Dosa", lunch: "Pulao & Raita", snacks: "Sandwich", dinner: "Aloo Gobhi, Dal, Roti" },
+                    Saturday: { breakfast: "Poori Bhaji", lunch: "Dum Aloo, Rice", snacks: "Pakora", dinner: "Shahi Paneer, Naan" },
+                    Sunday: { breakfast: "Chole Kulche", lunch: "Biryani & Raita", snacks: "Pani Puri", dinner: "Special Thali" }
+                }
+            },
+            {
+                id: 2,
+                name: "FitFuel Kitchen",
+                rating: 4.6,
+                reviews: 189,
+                pricePerWeek: 1299,
+                type: "non-veg",
+                tags: ["Gym Diet", "High Protein", "Premium"],
+                image: "https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=400",
+                description: "Protein-rich meals designed for fitness enthusiasts and athletes.",
+                weeklyMenu: {
+                    Monday: { breakfast: "Egg Bhurji & Toast", lunch: "Grilled Chicken, Rice, Veggies", snacks: "Protein Shake", dinner: "Fish Curry, Quinoa" },
+                    Tuesday: { breakfast: "Chicken Sandwich", lunch: "Turkey Breast, Salad", snacks: "Greek Yogurt", dinner: "Lean Beef Stir-fry" },
+                    Wednesday: { breakfast: "Omelette & Avocado", lunch: "Tuna Salad Bowl", snacks: "Nuts & Seeds", dinner: "Chicken Breast, Sweet Potato" },
+                    Thursday: { breakfast: "Protein Pancakes", lunch: "Salmon, Brown Rice", snacks: "Cottage Cheese", dinner: "Turkey Mince, Veggies" },
+                    Friday: { breakfast: "Scrambled Eggs", lunch: "Chicken Quinoa Bowl", snacks: "Protein Bar", dinner: "Grilled Fish, Salad" },
+                    Saturday: { breakfast: "Full English", lunch: "Steak, Mashed Potato", snacks: "Smoothie", dinner: "Chicken Curry, Rice" },
+                    Sunday: { breakfast: "Eggs Benedict", lunch: "Seafood Platter", snacks: "Fruit Salad", dinner: "BBQ Chicken, Corn" }
+                }
             }
+        ];
 
-            // Multiplying by a standard activity factor of 1.2 (Sedentary)
-            let dailyCalories = Math.round(bmr * 1.2);
-            document.getElementById('calorie-result').innerText = `Your estimated daily requirement is ${dailyCalories} calories.`;
-        }
+        // Mess Card Component
+        const MessCard = ({ mess, onSubscribe }) => {
+            const [showMenu, setShowMenu] = useState(false);
+            return (
+                <div className="bg-white rounded-3xl overflow-hidden shadow-lg card-hover border border-gray-100">
+                    <div className="relative h-48 overflow-hidden">
+                        <img src={mess.image} alt={mess.name} className="w-full h-full object-cover" />
+                        <div className="absolute top-4 left-4"><Badge type={mess.type === "veg" ? "veg" : "non-veg"}>{mess.type === "veg" ? "🟢 Veg" : "🔴 Non-Veg"}</Badge></div>
+                        <div className="absolute top-4 right-4 bg-white/90 backdrop-blur px-3 py-1 rounded-full flex items-center gap-1"><Icon name="Star" size={16} className="text-yellow-500" /><span className="font-bold text-gray-900">{mess.rating}</span><span className="text-gray-500 text-sm">({mess.reviews})</span></div>
+                    </div>
+                    <div className="p-6">
+                        <div className="flex justify-between items-start mb-2">
+                            <h3 className="text-xl font-bold text-gray-900">{mess.name}</h3>
+                            <div className="text-right"><p className="text-2xl font-bold text-orange-600">₹{mess.pricePerWeek}</p><p className="text-xs text-gray-500">per week</p></div>
+                        </div>
+                        <p className="text-gray-600 text-sm mb-4 line-clamp-2">{mess.description}</p>
+                        <div className="flex flex-wrap gap-2 mb-4">{mess.tags.map(tag => <Badge key={tag} type={tag.toLowerCase().includes("gym") ? "gym" : tag.toLowerCase().includes("premium") ? "premium" : tag.toLowerCase().includes("budget") ? "budget" : "healthy"}>{tag}</Badge>)}</div>
+                        <div className="flex gap-2">
+                            <Button variant="secondary" className="flex-1 text-sm" onClick={() => setShowMenu(!showMenu)}>{showMenu ? "Hide Menu" : "View Menu"}</Button>
+                            <Button className="flex-1 text-sm" onClick={() => onSubscribe(mess)}>Subscribe</Button>
+                        </div>
+                        {showMenu && (
+                            <div className="mt-4 pt-4 border-t border-gray-100 slide-in">
+                                <h4 className="font-semibold mb-3 text-gray-900">Weekly Menu Preview</h4>
+                                <div className="space-y-2 max-h-48 overflow-y-auto">
+                                    {Object.entries(mess.weeklyMenu).slice(0, 3).map(([day, meals]) => (
+                                        <div key={day} className="bg-gray-50 rounded-xl p-3">
+                                            <p className="font-medium text-sm text-orange-600 mb-1">{day}</p>
+                                            <div className="grid grid-cols-2 gap-1 text-xs text-gray-600"><span>🌅 {meals.breakfast}</span><span>🌞 {meals.lunch}</span><span>☕ {meals.snacks}</span><span>🌙 {meals.dinner}</span></div>
+                                        </div>
+                                    ))}
+                                    <p className="text-xs text-center text-gray-500">+ 4 more days...</p>
+                                </div>
+                            </div>
+                        )}
+                    </div>
+                </div>
+            );
+        };
 
-        // Simulated AI Chatbot & Report Update
-        let totalCalories = 0;
-        let totalProtein = 0;
-        let totalCarbs = 0;
-        let totalFats = 0;
+        // Subscription Modal
+        const SubscriptionModal = ({ mess, onClose, onConfirm }) => {
+            const [plan, setPlan] = useState("weekly");
+            const [deliveryAddresses, setDeliveryAddresses] = useState({
+                breakfast: { id: 1, label: "Hostel Room 204", address: "Block B, IIT Campus, Mumbai" },
+                lunch: { id: 2, label: "College Canteen", address: "Main Building, IIT Campus, Mumbai" },
+                snacks: { id: 1, label: "Hostel Room 204", address: "Block B, IIT Campus, Mumbai" },
+                dinner: { id: 3, label: "Home", address: "45, Park Avenue, Mumbai" }
+            });
 
-        function sendMessage() {
-            let input = document.getElementById('chat-input').value;
-            if(!input) return;
+            const plans = { weekly: { multiplier: 1, label: "Weekly", savings: 0 }, monthly: { multiplier: 3.5, label: "Monthly", savings: 12.5 }, quarterly: { multiplier: 9, label: "Quarterly", savings: 25 } };
+            const price = Math.round(mess.pricePerWeek * plans[plan].multiplier);
+            const originalPrice = Math.round(mess.pricePerWeek * (plan === "monthly" ? 4 : plan === "quarterly" ? 12 : 1));
+            const savings = originalPrice - price;
 
-            let chatBox = document.getElementById('chat-box');
-            
-            // User message
-            chatBox.innerHTML += `<div class="chat-message user-msg">${input}</div>`;
-            document.getElementById('chat-input').value = "";
+            const savedAddresses = [
+                { id: 1, label: "Hostel Room 204", address: "Block B, IIT Campus, Mumbai" },
+                { id: 2, label: "College Canteen", address: "Main Building, IIT Campus, Mumbai" },
+                { id: 3, label: "Home", address: "45, Park Avenue, Mumbai" },
+                { id: 4, label: "Library", address: "Central Library, IIT Campus, Mumbai" }
+            ];
 
-            // Simulate AI Processing
-            setTimeout(() => {
-                // In a real app, you would send 'input' to an AI API here.
-                // We are hardcoding a simulated response for the prototype.
-                let addedCals = Math.floor(Math.random() * 300) + 200;
-                let addedProtein = Math.floor(Math.random() * 15) + 5;
-                let addedCarbs = Math.floor(Math.random() * 40) + 15;
-                let addedFats = Math.floor(Math.random() * 10) + 5;
+            return (
+                <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4 overflow-y-auto">
+                    <div className="bg-white rounded-3xl max-w-4xl w-full max-h-[90vh] overflow-y-auto slide-in my-4">
+                        <div className="sticky top-0 bg-white border-b border-gray-200 p-6 flex justify-between items-center z-10">
+                            <div><h2 className="text-2xl font-bold text-gray-900">Subscribe to {mess.name}</h2><p className="text-gray-600">Customize your meal plan and delivery preferences</p></div>
+                            <button onClick={onClose} className="p-2 hover:bg-gray-100 rounded-full"><Icon name="X" size={24} /></button>
+                        </div>
+                        <div className="p-6 space-y-8">
+                            <section>
+                                <h3 className="text-lg font-semibold mb-4 flex items-center gap-2"><Icon name="Calendar" size={20} className="text-orange-500" />Select Plan Duration</h3>
+                                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                    {Object.entries(plans).map(([key, data]) => (
+                                        <button key={key} onClick={() => setPlan(key)} className={`p-4 rounded-2xl border-2 transition-all text-left ${plan === key ? "border-orange-500 bg-orange-50" : "border-gray-200 hover:border-orange-300"}`}>
+                                            <div className="flex justify-between items-start mb-2"><span className="font-semibold capitalize">{data.label}</span>{data.savings > 0 && <span className="text-xs bg-green-100 text-green-700 px-2 py-1 rounded-full">Save {data.savings}%</span>}</div>
+                                            <p className="text-2xl font-bold text-gray-900">₹{Math.round(mess.pricePerWeek * data.multiplier)}</p>
+                                            <p className="text-xs text-gray-500 mt-1">{key === "weekly" ? "7 days" : key === "monthly" ? "30 days" : "90 days"}</p>
+                                        </button>
+                                    ))}
+                                </div>
+                            </section>
 
-                totalCalories += addedCals;
-                totalProtein += addedProtein;
-                totalCarbs += addedCarbs;
-                totalFats += addedFats;
+                            <section>
+                                <h3 className="text-lg font-semibold mb-4 flex items-center gap-2"><Icon name="MapPin" size={20} className="text-orange-500" />Flexible Delivery Locations<span className="text-xs bg-orange-100 text-orange-700 px-2 py-1 rounded-full ml-2">Unique Feature</span></h3>
+                                <p className="text-sm text-gray-600 mb-4">Set different delivery addresses for each meal slot. Perfect for your student schedule!</p>
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    {[{ key: "breakfast", label: "Breakfast (8:00 AM)", icon: "Sunrise", color: "bg-yellow-100 text-yellow-700" }, { key: "lunch", label: "Lunch (1:00 PM)", icon: "Sun", color: "bg-orange-100 text-orange-700" }, { key: "snacks", label: "Evening Snacks (4:30 PM)", icon: "Coffee", color: "bg-amber-100 text-amber-700" }, { key: "dinner", label: "Dinner (8:00 PM)", icon: "Moon", color: "bg-indigo-100 text-indigo-700" }].map((meal) => (
+                                        <div key={meal.key} className="bg-white border-2 border-gray-100 rounded-2xl p-4">
+                                            <div className="flex items-center gap-2 mb-3"><div className={`w-8 h-8 rounded-lg ${meal.color} flex items-center justify-center`}><Icon name={meal.icon} size={16} /></div><span className="font-medium text-sm">{meal.label}</span></div>
+                                            <select className="w-full p-3 bg-gray-50 rounded-xl border-2 border-gray-200 focus:border-orange-500 focus:outline-none text-sm" value={deliveryAddresses[meal.key].id} onChange={(e) => { const addr = savedAddresses.find(a => a.id === parseInt(e.target.value)); setDeliveryAddresses({ ...deliveryAddresses, [meal.key]: addr }); }}>
+                                                {savedAddresses.map(addr => <option key={addr.id} value={addr.id}>{addr.label} - {addr.address.substring(0, 30)}...</option>)}
+                                            </select>
+                                            <p className="text-xs text-gray-500 mt-2 truncate">{deliveryAddresses[meal.key].address}</p>
+                                        </div>
+                                    ))}
+                                </div>
+                            </section>
 
-                updateReport();
+                            <div className="bg-orange-50 rounded-2xl p-6 space-y-3">
+                                <div className="flex justify-between text-sm"><span className="text-gray-600">Original Price</span><span className="line-through">₹{originalPrice}</span></div>
+                                {savings > 0 && <div className="flex justify-between text-sm text-green-600"><span>Subscription Discount</span><span>-₹{savings}</span></div>}
+                                <div className="flex justify-between items-center pt-3 border-t border-orange-200"><span className="font-semibold text-lg">Total Amount</span><span className="text-3xl font-bold text-orange-600">₹{price}</span></div>
+                            </div>
 
-                chatBox.innerHTML += `<div class="chat-message ai-msg">I've logged that! That's roughly ${addedCals} calories and ${addedProtein}g of protein. I've updated your daily report.</div>`;
-                chatBox.scrollTop = chatBox.scrollHeight;
-            }, 1000);
-        }
+                            <div className="flex flex-col sm:flex-row gap-4">
+                                <Button variant="secondary" className="flex-1" onClick={onClose}>Cancel</Button>
+                                <Button className="flex-1" onClick={() => onConfirm({ plan, deliveryAddresses, price, mess })}>Proceed to Payment<Icon name="ArrowRight" size={18} /></Button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            );
+        };
 
-        function updateReport() {
-            document.getElementById('rep-calories').innerText = totalCalories + " kcal";
-            document.getElementById('rep-protein').innerText = totalProtein + " g";
-            document.getElementById('rep-carbs').innerText = totalCarbs + " g";
-            document.getElementById('rep-fats').innerText = totalFats + " g";
-        }
+        // Payment Modal
+        const PaymentModal = ({ amount, onClose, onSuccess }) => {
+            const [method, setMethod] = useState("upi");
+            const [processing, setProcessing] = useState(false);
+            const handlePayment = () => { setProcessing(true); setTimeout(() => { setProcessing(false); onSuccess(); }, 2000); };
+            return (
+                <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+                    <div className="bg-white rounded-3xl max-w-md w-full slide-in">
+                        <div className="p-6 border-b border-gray-200 flex justify-between items-center"><h2 className="text-xl font-bold">Payment</h2><button onClick={onClose} className="p-2 hover:bg-gray-100 rounded-full"><Icon name="X" size={20} /></button></div>
+                        <div className="p-6 space-y-6">
+                            <div className="text-center"><p className="text-gray-600 mb-1">Total Amount</p><p className="text-4xl font-bold text-gray-900">₹{amount}</p></div>
+                            <div className="space-y-2">
+                                {[{ id: "upi", label: "UPI", icon: "Smartphone", desc: "Google Pay, PhonePe, Paytm" }, { id: "card", label: "Credit/Debit Card", icon: "CreditCard", desc: "Visa, Mastercard, RuPay" }, { id: "netbanking", label: "Net Banking", icon: "Building2", desc: "All major banks" }].map((m) => (
+                                    <button key={m.id} onClick={() => setMethod(m.id)} className={`w-full p-4 rounded-xl border-2 flex items-center gap-3 transition-all ${method === m.id ? "border-orange-500 bg-orange-50" : "border-gray-200"}`}>
+                                        <Icon name={m.icon} size={24} className={method === m.id ? "text-orange-500" : "text-gray-400"} />
+                                        <div className="text-left"><p className="font-medium">{m.label}</p><p className="text-xs text-gray-500">{m.desc}</p></div>
+                                    </button>
+                                ))}
+                            </div>
+                            <Button className="w-full" onClick={handlePayment} disabled={processing}>
+                                {processing ? <><div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin mr-2" />Processing...</> : <>Pay ₹{amount}<Icon name="Lock" size={18} /></>}
+                            </Button>
+                        </div>
+                    </div>
+                </div>
+            );
+        };
 
-        // Get Live Location and Render Map
-        function getLocation() {
-            const mapContainer = document.getElementById('map-container');
-            mapContainer.innerHTML = "Fetching location...";
+        // Seller Dashboard
+        const SellerDashboard = ({ user, onLogout }) => {
+            const [activeTab, setActiveTab] = useState('services');
+            const [services, setServices] = useState([]);
+            const [orders, setOrders] = useState([]);
+            const [showModal, setShowModal] = useState(false);
+            const [editingService, setEditingService] = useState(null);
 
-            if (navigator.geolocation) {
-                navigator.geolocation.getCurrentPosition(showPosition, showError);
-            } else {
-                mapContainer.innerHTML = "Geolocation is not supported by this browser.";
-            }
-        }
+            useEffect(() => {
+                const store = JSON.parse(localStorage.getItem('tiffinBoxStore'));
+                const sellerServices = store.sellerServices?.filter(s => s.sellerId === user.id) || [];
+                const sellerOrders = store.orders?.filter(o => sellerServices.some(s => s.id === o.serviceId)) || [];
+                setServices(sellerServices);
+                setOrders(sellerOrders);
+            }, [user.id]);
 
-        function showPosition(position) {
-            let lat = position.coords.latitude;
-            let lon = position.coords.longitude;
-            
-            // Using OpenStreetMap embedded iframe for an easy map display without API keys
-            const mapContainer = document.getElementById('map-container');
-            mapContainer.innerHTML = `<iframe 
-                width="100%" 
-                height="100%" 
-                frameborder="0" 
-                scrolling="no" 
-                marginheight="0" 
-                marginwidth="0" 
-                src="https://www.openstreetmap.org/export/embed.html?bbox=${lon-0.01}%2C${lat-0.01}%2C${lon+0.01}%2C${lat+0.01}&amp;layer=mapnik&amp;marker=${lat}%2C${lon}">
-            </iframe>`;
-        }
+            const handleSaveService = (formData) => {
+                const store = JSON.parse(localStorage.getItem('tiffinBoxStore'));
+                if (editingService) {
+                    const updated = services.map(s => s.id === editingService.id ? { ...s, ...formData } : s);
+                    store.sellerServices = updated;
+                    setServices(updated);
+                } else {
+                    const newService = { id: Date.now(), sellerId: user.id, ...formData, rating: 0, reviews: 0, createdAt: new Date().toISOString() };
+                    store.sellerServices = [...(store.sellerServices || []), newService];
+                    setServices([...services, newService]);
+                }
+                localStorage.setItem('tiffinBoxStore', JSON.stringify(store));
+                setShowModal(false);
+                setEditingService(null);
+            };
 
-        function showError(error) {
-            const mapContainer = document.getElementById('map-container');
-            switch(error.code) {
-                case error.PERMISSION_DENIED:
-                    mapContainer.innerHTML = "User denied the request for Geolocation."
-                    break;
-                case error.POSITION_UNAVAILABLE:
-                    mapContainer.innerHTML = "Location information is unavailable."
-                    break;
-                case error.TIMEOUT:
-                    mapContainer.innerHTML = "The request to get user location timed out."
-                    break;
-                case error.UNKNOWN_ERROR:
-                    mapContainer.innerHTML = "An unknown error occurred."
-                    break;
-            }
-        }
+            const handleDelete = (id) => {
+                if (!confirm('Delete this service?')) return;
+                const store = JSON.parse(localStorage.getItem('tiffinBoxStore'));
+                const updated = services.filter(s => s.id !== id);
+                store.sellerServices = updated;
+                localStorage.setItem('tiffinBoxStore', JSON.stringify(store));
+                setServices(updated);
+            };
 
-        function orderTiffin() {
-            alert("This would send your macro requirements to the kitchen for tomorrow's customized tiffin!");
-        }
+            return (
+                <div className="min-h-screen bg-gray-50">
+                    <nav className="bg-white border-b border-gray-200 sticky top-0 z-50">
+                        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                            <div className="flex justify-between h-16">
+                                <div className="flex items-center gap-8">
+                                    <div className="flex items-center gap-2">
+                                        <div className="w-10 h-10 gradient-orange rounded-xl flex items-center justify-center"><Icon name="Utensils" size={24} className="text-white" /></div>
+                                        <div><span className="text-xl font-bold text-gray-900">TiffinBox</span><span className="ml-2 px-2 py-0.5 bg-red-100 text-red-700 text-xs rounded-full font-medium">Seller</span></div>
+                                    </div>
+                                    <div className="hidden md:flex gap-1">
+                                        <button onClick={() => setActiveTab('services')} className={`flex items-center gap-2 px-4 py-2 rounded-xl transition-all ${activeTab === 'services' ? "bg-orange-50 text-orange-600 font-medium" : "text-gray-600 hover:text-orange-500"}`}><Icon name="Building2" size={18} />My Services</button>
+                                        <button onClick={() => setActiveTab('orders')} className={`flex items-center gap-2 px-4 py-2 rounded-xl transition-all ${activeTab === 'orders' ? "bg-orange-50 text-orange-600 font-medium" : "text-gray-600 hover:text-orange-500"}`}><Icon name="Package" size={18} />Orders{orders.filter(o => o.status === 'pending').length > 0 && <span className="ml-1 px-2 py-0.5 bg-red-500 text-white text-xs rounded-full">{orders.filter(o => o.status === 'pending').length}</span>}</button>
+                                    </div>
+                                </div>
+                                <div className="flex items-center gap-4">
+                                    <div className="flex items-center gap-3 pl-4 border-l border-gray-200">
+                                        <div className="text-right hidden sm:block"><p className="text-sm font-semibold text-gray-900">{user.name}</p><p className="text-xs text-gray-500">Seller Account</p></div>
+                                        <div className="w-10 h-10 bg-red-100 rounded-full flex items-center justify-center"><Icon name="User" size={20} className="text-red-600" /></div>
+                                        <button onClick={onLogout} className="p-2 text-gray-400 hover:text-red-500"><Icon name="X" size={20} /></button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </nav>
+
+                    <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+                        {activeTab === 'services' ? (
+                            <div className="space-y-6">
+                                <div className="flex justify-between items-center">
+                                    <div><h2 className="text-2xl font-bold text-gray-900">My Tiffin Services</h2><p className="text-gray-600">Manage your offerings and menu</p></div>
+                                    <Button onClick={() => { setEditingService(null); setShowModal(true); }}><Icon name="Plus" size={18} />Add New Service</Button>
+                                </div>
+                                {services.length === 0 ? (
+                                    <div className="text-center py-16 bg-white rounded-3xl border border-gray-200">
+                                        <div className="w-20 h-20 bg-orange-100 rounded-full flex items-center justify-center mx-auto mb-4"><Icon name="Building2" size={40} className="text-orange-500" /></div>
+                                        <h3 className="text-xl font-semibold text-gray-900 mb-2">No services yet</h3>
+                                        <p className="text-gray-600 mb-6">Add your first tiffin service to start receiving orders</p>
+                                        <Button onClick={() => { setEditingService(null); setShowModal(true); }}><Icon name="Plus" size={18} />Add Service</Button>
+                                    </div>
+                                ) : (
+                                    <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                                        {services.map(service => (
+                                            <div key={service.id} className="bg-white rounded-3xl overflow-hidden shadow-lg border border-gray-100">
+                                                <div className="relative h-48 overflow-hidden">
+                                                    <img src={service.image || 'https://via.placeholder.com/400'} alt={service.name} className="w-full h-full object-cover" />
+                                                    <div className="absolute top-4 left-4"><Badge type={service.type === "veg" ? "veg" : "non-veg"}>{service.type === "veg" ? "🟢 Veg" : "🔴 Non-Veg"}</Badge></div>
+                                                    <div className="absolute top-4 right-4 flex gap-2">
+                                                        <button onClick={() => { setEditingService(service); setShowModal(true); }} className="p-2 bg-white/90 rounded-lg hover:bg-white"><Icon name="Settings" size={16} /></button>
+                                                        <button onClick={() => handleDelete(service.id)} className="p-2 bg-white/90 rounded-lg hover:bg-red-50 text-red-500"><Icon name="X" size={16} /></button>
+                                                    </div>
+                                                </div>
+                                                <div className="p-6">
+                                                    <h3 className="text-xl font-bold text-gray-900 mb-2">{service.name}</h3>
+                                                    <p className="text-gray-600 text-sm mb-4">{service.description}</p>
+                                                    <div className="flex justify-between items-center mb-4"><span className="text-2xl font-bold text-orange-600">₹{service.pricePerWeek}/week</span><span className="text-sm text-gray-500">{service.orders || 0} orders</span></div>
+                                                    <div className="flex flex-wrap gap-2">{service.tags?.map(tag => <Badge key={tag} type={tag.toLowerCase().includes("gym") ? "gym" : tag.toLowerCase().includes("premium") ? "premium" : "healthy"}>{tag}</Badge>)}</div>
+                                                </div>
+                                            </div>
+                                        ))}
+                                    </div>
+                                )}
+                            </div>
+                        ) : (
+                            <div className="space-y-6">
+                                <h2 className="text-2xl font-bold text-gray-900">Received Orders</h2>
+                                {orders.length === 0 ? <div className="text-center py-16 bg-white rounded-3xl border border-gray-200"><p className="text-gray-600">No orders yet</p></div> : (
+                                    <div className="space-y-4">
+                                        {orders.map(order => (
+                                            <div key={order.id} className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
+                                                <div className="flex justify-between items-start mb-4"><div><p className="font-semibold text-lg">Order #{order.id}</p><p className="text-sm text-gray-600">{order.customerName || 'Customer'}</p></div><span className={`px-3 py-1 rounded-full text-sm font-medium ${order.status === 'pending' ? 'bg-yellow-100 text-yellow-700' : order.status === 'preparing' ? 'bg-orange-100 text-orange-700' : 'bg-green-100 text-green-700'}`}>{order.status}</span></div>
+                                                <div className="space-y-2 text-sm text-gray-600"><p>Service: {order.serviceName}</p><p>Amount: ₹{order.amount}</p><p>Delivery: {order.deliveryAddress}</p></div>
+                                            </div>
+                                        ))}
+                                    </div>
+                                )}
+                            </div>
+                        )}
+                    </main>
+
+                    {showModal && <ServiceModal service={editingService} onClose={() => { setShowModal(false); setEditingService(null); }} onSave={handleSaveService} />}
+                </div>
+            );
+        };
+
+        // Service Modal
+        const ServiceModal = ({ service, onClose, onSave }) => {
+            const [formData, setFormData] = useState(service || { name: '', description: '', pricePerWeek: '', image: '', type: 'veg', tags: [], weeklyMenu: { Monday: { breakfast: "", lunch: "", snacks: "", dinner: "" }, Tuesday: { breakfast: "", lunch: "", snacks: "", dinner: "" }, Wednesday: { breakfast: "", lunch: "", snacks: "", dinner: "" }, Thursday: { breakfast: "", lunch: "", snacks: "", dinner: "" }, Friday: { breakfast: "", lunch: "", snacks: "", dinner: "" }, Saturday: { breakfast: "", lunch: "", snacks: "", dinner: "" }, Sunday: { breakfast: "", lunch: "", snacks: "", dinner: "" } }, deliverySlots: ['breakfast', 'lunch', 'dinner'] });
+            const [activeTab, setActiveTab] = useState('basic');
+
+            const updateMenu = (day, meal, value) => setFormData({ ...formData, weeklyMenu: { ...formData.weeklyMenu, [day]: { ...formData.weeklyMenu[day], [meal]: value } } });
+            const toggleSlot = (slot) => setFormData({ ...formData, deliverySlots: formData.deliverySlots.includes(slot) ? formData.deliverySlots.filter(s => s !== slot) : [...formData.deliverySlots, slot] });
+
+            return (
+                <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4 overflow-y-auto">
+                    <div className="bg-white rounded-3xl max-w-4xl w-full max-h-[90vh] overflow-y-auto slide-in my-4">
+                        <div className="sticky top-0 bg-white border-b border-gray-200 p-6 flex justify-between items-center z-10"><h2 className="text-2xl font-bold text-gray-900">{service ? 'Edit Service' : 'Add New Service'}</h2><button onClick={onClose} className="p-2 hover:bg-gray-100 rounded-full"><Icon name="X" size={24} /></button></div>
+                        <form onSubmit={(e) => { e.preventDefault(); onSave(formData); }} className="p-6 space-y-6">
+                            <div className="flex gap-2 border-b border-gray-200 pb-2">
+                                <button type="button" onClick={() => setActiveTab('basic')} className={`px-4 py-2 font-medium ${activeTab === 'basic' ? 'text-orange-600 border-b-2 border-orange-500' : 'text-gray-500'}`}>Basic Info</button>
+                                <button type="button" onClick={() => setActiveTab('menu')} className={`px-4 py-2 font-medium ${activeTab === 'menu' ? 'text-orange-600 border-b-2 border-orange-500' : 'text-gray-500'}`}>Weekly Menu</button>
+                                <button type="button" onClick={() => setActiveTab('delivery')} className={`px-4 py-2 font-medium ${activeTab === 'delivery' ? 'text-orange-600 border-b-2 border-orange-500' : 'text-gray-500'}`}>Delivery Slots</button>
+                            </div>
+
+                            {activeTab === 'basic' && (
+                                <div className="space-y-4">
+                                    <div><label className="block text-sm font-medium text-gray-700 mb-1">Service Name</label><input type="text" required className="w-full p-3 rounded-xl border-2 border-gray-200 focus:border-orange-500 focus:outline-none" value={formData.name} onChange={(e) => setFormData({ ...formData, name: e.target.value })} placeholder="e.g., Campus Cravings" /></div>
+                                    <div><label className="block text-sm font-medium text-gray-700 mb-1">Description</label><textarea required rows={3} className="w-full p-3 rounded-xl border-2 border-gray-200 focus:border-orange-500 focus:outline-none" value={formData.description} onChange={(e) => setFormData({ ...formData, description: e.target.value })} placeholder="Describe your tiffin service..." /></div>
+                                    <div className="grid grid-cols-2 gap-4">
+                                        <div><label className="block text-sm font-medium text-gray-700 mb-1">Price per Week (₹)</label><input type="number" required className="w-full p-3 rounded-xl border-2 border-gray-200 focus:border-orange-500 focus:outline-none" value={formData.pricePerWeek} onChange={(e) => setFormData({ ...formData, pricePerWeek: e.target.value })} placeholder="899" /></div>
+                                        <div><label className="block text-sm font-medium text-gray-700 mb-1">Image URL</label><input type="url" required className="w-full p-3 rounded-xl border-2 border-gray-200 focus:border-orange-500 focus:outline-none" value={formData.image} onChange={(e) => setFormData({ ...formData, image: e.target.value })} placeholder="https://..." /></div>
+                                    </div>
+                                    <div className="grid grid-cols-2 gap-4">
+                                        <div><label className="block text-sm font-medium text-gray-700 mb-1">Type</label><select className="w-full p-3 rounded-xl border-2 border-gray-200 focus:border-orange-500 focus:outline-none" value={formData.type} onChange={(e) => setFormData({ ...formData, type: e.target.value })}><option value="veg">Vegetarian</option><option value="non-veg">Non-Vegetarian</option></select></div>
+                                        <div><label className="block text-sm font-medium text-gray-700 mb-1">Tags (comma separated)</label><input type="text" className="w-full p-3 rounded-xl border-2 border-gray-200 focus:border-orange-500 focus:outline-none" value={formData.tags?.join(', ')} onChange={(e) => setFormData({ ...formData, tags: e.target.value.split(',').map(t => t.trim()).filter(Boolean) })} placeholder="Healthy, Budget, Organic" /></div>
+                                    </div>
+                                </div>
+                            )}
+
+                            {activeTab === 'menu' && (
+                                <div className="space-y-4 max-h-96 overflow-y-auto">
+                                    <p className="text-sm text-gray-600">Set your weekly menu (4 meals per day)</p>
+                                    {Object.entries(formData.weeklyMenu).map(([day, meals]) => (
+                                        <div key={day} className="border border-gray-200 rounded-xl p-4">
+                                            <h4 className="font-semibold text-orange-600 mb-3">{day}</h4>
+                                            <div className="grid grid-cols-2 gap-3">
+                                                {Object.entries(meals).map(([meal, value]) => (
+                                                    <div key={meal}><label className="block text-xs font-medium text-gray-500 mb-1 capitalize">{meal}</label><input type="text" className="w-full p-2 rounded-lg border border-gray-200 focus:border-orange-500 focus:outline-none text-sm" value={value} onChange={(e) => updateMenu(day, meal, e.target.value)} placeholder={`${meal} item...`} /></div>
+                                                ))}
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+                            )}
+
+                            {activeTab === 'delivery' && (
+                                <div className="space-y-4">
+                                    <p className="text-sm text-gray-600">Select which meal slots you offer:</p>
+                                    <div className="grid grid-cols-2 gap-4">
+                                        {[{ key: 'breakfast', label: 'Breakfast (8:00 AM)', icon: 'Sunrise' }, { key: 'lunch', label: 'Lunch (1:00 PM)', icon: 'Sun' }, { key: 'snacks', label: 'Evening Snacks (4:30 PM)', icon: 'Coffee' }, { key: 'dinner', label: 'Dinner (8:00 PM)', icon: 'Moon' }].map(slot => (
+                                            <label key={slot.key} className={`flex items-center gap-3 p-4 rounded-xl border-2 cursor-pointer transition-all ${formData.deliverySlots.includes(slot.key) ? 'border-orange-500 bg-orange-50' : 'border-gray-200'}`}>
+                                                <input type="checkbox" checked={formData.deliverySlots.includes(slot.key)} onChange={() => toggleSlot(slot.key)} className="w-5 h-5 text-orange-500" />
+                                                <Icon name={slot.icon} size={20} className="text-orange-500" /><span className="font-medium">{slot.label}</span>
+                                            </label>
+                                        ))}
+                                    </div>
+                                </div>
+                            )}
+
+                            <div className="flex gap-4 pt-4 border-t border-gray-200">
+                                <Button type="button" variant="secondary" className="flex-1" onClick={onClose}>Cancel</Button>
+                                <Button type="submit" className="flex-1">{service ? 'Save Changes' : 'Create Service'}</Button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            );
+        };
+
+        // Buyer Views
+        const BuyerDashboard = ({ subscriptions, onTrack, user, onLogout }) => {
+            const stats = [{ label: "Active Subscriptions", value: subscriptions.length, icon: "Calendar", color: "bg-blue-100 text-blue-600" }, { label: "Meals This Week", value: subscriptions.length * 28, icon: "Utensils", color: "bg-orange-100 text-orange-600" }, { label: "Wallet Balance", value: "₹450", icon: "Wallet", color: "bg-green-100 text-green-600" }, { label: "Referral Code", value: "STU2024", icon: "Gift", color: "bg-purple-100 text-purple-600" }];
+            return (
+                <div className="space-y-8">
+                    <div className="gradient-orange rounded-3xl p-8 text-white">
+                        <div className="flex justify-between items-start">
+                            <div>
+                                <h1 className="text-3xl font-bold mb-2">Good Morning, {user.name.split(' ')[0]}! 👋</h1>
+                                <p className="text-orange-100">Your next meal arrives in 45 minutes at College Canteen</p>
+                            </div>
+                            <button onClick={onLogout} className="bg-white/20 hover:bg-white/30 text-white px-4 py-2 rounded-lg text-sm">Logout</button>
+                        </div>
+                        <div className="mt-6 flex flex-col sm:flex-row gap-4">
+                            <button onClick={() => onTrack(subscriptions[0])} className="bg-white text-orange-600 px-6 py-3 rounded-xl font-semibold flex items-center gap-2 hover:bg-orange-50 transition-colors justify-center"><Icon name="MapPin" size={18} />Track Delivery</button>
+                            <button className="bg-orange-600/50 text-white px-6 py-3 rounded-xl font-semibold flex items-center gap-2 hover:bg-orange-600/70 transition-colors justify-center"><Icon name="Calendar" size={18} />View Schedule</button>
+                        </div>
+                    </div>
+
+                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                        {stats.map((stat, idx) => (
+                            <div key={idx} className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
+                                <div className={`w-12 h-12 rounded-xl ${stat.color} flex items-center justify-center mb-3`}><Icon name={stat.icon} size={24} /></div>
+                                <p className="text-2xl font-bold text-gray-900">{stat.value}</p><p className="text-sm text-gray-500">{stat.label}</p>
+                            </div>
+                        ))}
+                    </div>
+
+                    <div className="grid md:grid-cols-2 gap-6">
+                        <div className="bg-white rounded-3xl p-6 shadow-sm border border-gray-100">
+                            <h3 className="text-lg font-bold mb-4 flex items-center gap-2"><Icon name="Zap" size={20} className="text-orange-500" />AI Recommendations</h3>
+                            <div className="space-y-3">
+                                <div className="flex items-center gap-4 p-3 bg-orange-50 rounded-xl cursor-pointer hover:bg-orange-100 transition-colors"><img src={defaultProviders[1].image} className="w-16 h-16 rounded-xl object-cover" alt="" /><div className="flex-1"><p className="font-semibold">{defaultProviders[1].name}</p><p className="text-xs text-gray-600">Based on your gym schedule</p></div><span className="text-orange-600 font-bold">₹{defaultProviders[1].pricePerWeek}/wk</span></div>
+                            </div>
+                        </div>
+                        <div className="bg-white rounded-3xl p-6 shadow-sm border border-gray-100">
+                            <h3 className="text-lg font-bold mb-4 flex items-center gap-2"><Icon name="Clock" size={20} className="text-orange-500" />Today's Schedule</h3>
+                            <div className="space-y-3">
+                                {[{ time: "8:00 AM", meal: "Breakfast", status: "Delivered", icon: "CheckCircle", color: "text-green-500" }, { time: "1:00 PM", meal: "Lunch", status: "Preparing", icon: "ChefHat", color: "text-orange-500" }, { time: "4:30 PM", meal: "Snacks", status: "Scheduled", icon: "Clock", color: "text-gray-400" }, { time: "8:00 PM", meal: "Dinner", status: "Scheduled", icon: "Clock", color: "text-gray-400" }].map((item, idx) => (
+                                    <div key={idx} className="flex items-center gap-4 p-3 border-b border-gray-100 last:border-0"><div className="w-16 text-sm font-medium text-gray-600">{item.time}</div><div className="flex-1"><p className="font-semibold">{item.meal}</p></div><div className={`flex items-center gap-1 text-sm ${item.color}`}><Icon name={item.icon} size={16} /><span className="hidden sm:inline">{item.status}</span></div></div>
+                                ))}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            );
+        };
+
+        const TrackingView = () => {
+            const [progress] = useState(65);
+            return (
+                <div className="max-w-4xl mx-auto space-y-6">
+                    <div className="bg-white rounded-3xl p-8 shadow-sm border border-gray-100">
+                        <div className="flex flex-col md:flex-row md:items-center justify-between mb-8 gap-4"><div><h2 className="text-2xl font-bold mb-1">Lunch Delivery</h2><p className="text-gray-600">From Campus Cravings</p></div><div className="text-left md:text-right"><p className="text-sm text-gray-500">Estimated Arrival</p><p className="text-2xl font-bold text-orange-600">12:45 PM</p></div></div>
+                        <div className="relative h-2 bg-gray-200 rounded-full mb-8 overflow-hidden"><div className="absolute h-full progress-bar rounded-full" style={{ width: `${progress}%` }} /></div>
+                        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+                            {[{ status: "Preparing", time: "11:30 AM", active: true, icon: "ChefHat" }, { status: "Packed", time: "12:00 PM", active: true, icon: "Package" }, { status: "Out for Delivery", time: "12:20 PM", active: true, icon: "Bike", current: true }, { status: "Delivered", time: "12:45 PM", active: false, icon: "CheckCircle" }].map((step, idx) => (
+                                <div key={idx} className={`text-center ${step.active ? 'opacity-100' : 'opacity-40'}`}><div className={`w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-2 ${step.current ? 'bg-orange-500 text-white pulse-ring' : step.active ? 'bg-orange-100 text-orange-600' : 'bg-gray-100 text-gray-400'}`}><Icon name={step.icon} size={24} /></div><p className="font-semibold text-sm">{step.status}</p><p className="text-xs text-gray-500">{step.time}</p></div>
+                            ))}
+                        </div>
+                    </div>
+                </div>
+            );
+        };
+
+        // Main App
+        const App = () => {
+            const [user, setUser] = useState(null);
+            const [userRole, setUserRole] = useState(null);
+            const [showRoleSelection, setShowRoleSelection] = useState(false);
+            const [activeTab, setActiveTab] = useState("dashboard");
+            const [selectedMess, setSelectedMess] = useState(null);
+            const [showPayment, setShowPayment] = useState(false);
+            const [subscriptionData, setSubscriptionData] = useState(null);
+            const [subscriptions, setSubscriptions] = useState([]);
+            const [showTracking, setShowTracking] = useState(false);
+
+            useEffect(() => {
+                initializeStore();
+                const store = JSON.parse(localStorage.getItem('tiffinBoxStore'));
+                if (!store.userRole) setShowRoleSelection(true);
+                else {
+                    setUserRole(store.userRole);
+                    if (store.currentUser) {
+                        setUser(store.currentUser);
+                        if (store.userRole === 'buyer') setSubscriptions(store.orders || []);
+                    }
+                }
+            }, []);
+
+            const handleRoleSelect = (role) => {
+                const store = JSON.parse(localStorage.getItem('tiffinBoxStore'));
+                store.userRole = role;
+                localStorage.setItem('tiffinBoxStore', JSON.stringify(store));
+                setUserRole(role);
+                setShowRoleSelection(false);
+            };
+
+            const handleLogin = (userData, role) => {
+                setUser(userData);
+                setUserRole(role);
+                const store = JSON.parse(localStorage.getItem('tiffinBoxStore'));
+                if (role === 'buyer') setSubscriptions(store.orders || []);
+            };
+
+            const handleLogout = () => {
+                const store = JSON.parse(localStorage.getItem('tiffinBoxStore'));
+                store.currentUser = null;
+                store.userRole = null;
+                localStorage.setItem('tiffinBoxStore', JSON.stringify(store));
+                setUser(null);
+                setUserRole(null);
+                setShowRoleSelection(true);
+            };
+
+            const handlePaymentSuccess = () => {
+                const store = JSON.parse(localStorage.getItem('tiffinBoxStore'));
+                const newOrder = { id: Date.now(), userId: user.id, ...subscriptionData, status: 'active', createdAt: new Date().toISOString(), serviceName: subscriptionData.mess.name };
+                store.orders = [...(store.orders || []), newOrder];
+                localStorage.setItem('tiffinBoxStore', JSON.stringify(store));
+                setSubscriptions([...subscriptions, newOrder]);
+                setShowPayment(false);
+                setActiveTab('dashboard');
+                alert('Order placed successfully!');
+            };
+
+            if (showRoleSelection) return <RoleSelection onRoleSelect={handleRoleSelect} />;
+            if (!user) return <AuthScreen onLogin={handleLogin} initialRole={userRole} />;
+            if (userRole === 'seller') return <SellerDashboard user={user} onLogout={handleLogout} />;
+
+            // Buyer View
+            return (
+                <div className="min-h-screen bg-gray-50">
+                    <nav className="bg-white border-b border-gray-200 sticky top-0 z-50">
+                        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                            <div className="flex justify-between h-16">
+                                <div className="flex items-center gap-8">
+                                    <div className="flex items-center gap-2 cursor-pointer" onClick={() => { setActiveTab('dashboard'); setShowTracking(false); }}>
+                                        <div className="w-10 h-10 gradient-orange rounded-xl flex items-center justify-center"><Icon name="Utensils" size={24} className="text-white" /></div>
+                                        <div className="flex items-center gap-2"><span className="text-2xl font-bold text-gray-900">TiffinBox</span><span className="px-2 py-0.5 bg-orange-100 text-orange-700 text-xs rounded-full font-medium">Buyer</span></div>
+                                    </div>
+                                    <div className="hidden md:flex gap-1">
+                                        <button onClick={() => { setActiveTab('dashboard'); setShowTracking(false); }} className={`flex items-center gap-2 px-4 py-2 rounded-xl transition-all ${activeTab === 'dashboard' && !showTracking ? "bg-orange-50 text-orange-600 font-medium" : "text-gray-600 hover:text-orange-500"}`}><Icon name="LayoutDashboard" size={18} />Home</button>
+                                        <button onClick={() => { setActiveTab('browse'); setShowTracking(false); }} className={`flex items-center gap-2 px-4 py-2 rounded-xl transition-all ${activeTab === 'browse' ? "bg-orange-50 text-orange-600 font-medium" : "text-gray-600 hover:text-orange-500"}`}><Icon name="Search" size={18} />Browse</button>
+                                        <button onClick={() => { setActiveTab('orders'); setShowTracking(false); }} className={`flex items-center gap-2 px-4 py-2 rounded-xl transition-all ${activeTab === 'orders' ? "bg-orange-50 text-orange-600 font-medium" : "text-gray-600 hover:text-orange-500"}`}><Icon name="Package" size={18} />My Orders</button>
+                                    </div>
+                                </div>
+                                <div className="flex items-center gap-4">
+                                    <button className="relative p-2 text-gray-600 hover:text-orange-500"><Icon name="Bell" size={20} /><span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full"></span></button>
+                                    <div className="flex items-center gap-3 pl-4 border-l border-gray-200">
+                                        <div className="text-right hidden sm:block"><p className="text-sm font-semibold text-gray-900">{user.name}</p><p className="text-xs text-gray-500 capitalize">{userRole}</p></div>
+                                        <div className="w-10 h-10 bg-orange-100 rounded-full flex items-center justify-center cursor-pointer" onClick={handleLogout}><Icon name="User" size={20} className="text-orange-600" /></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </nav>
+
+                    <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+                        {showTracking ? <TrackingView /> : (
+                            <>
+                                {activeTab === 'dashboard' && <BuyerDashboard subscriptions={subscriptions} onTrack={() => setShowTracking(true)} user={user} onLogout={handleLogout} />}
+                                {activeTab === 'browse' && (
+                                    <div className="space-y-6">
+                                        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4"><div><h2 className="text-3xl font-bold text-gray-900">Browse Tiffin Services</h2><p className="text-gray-600 mt-1">Find the perfect meal plan for your schedule</p></div></div>
+                                        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                                            {[...defaultProviders, ...(JSON.parse(localStorage.getItem('tiffinBoxStore') || '{}').sellerServices || [])].map(mess => <MessCard key={mess.id} mess={mess} onSubscribe={setSelectedMess} />)}
+                                        </div>
+                                    </div>
+                                )}
+                                {activeTab === 'orders' && (
+                                    <div className="space-y-6">
+                                        <h2 className="text-2xl font-bold">My Orders</h2>
+                                        {subscriptions.length === 0 ? <div className="text-center py-16 bg-white rounded-3xl"><p className="text-gray-600">No orders yet. Browse services to subscribe!</p><Button className="mt-4" onClick={() => setActiveTab('browse')}>Browse Now</Button></div> : <div className="space-y-4">{subscriptions.map(order => <div key={order.id} className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100"><div className="flex justify-between items-start"><div><p className="font-semibold text-lg">{order.serviceName || 'Tiffin Subscription'}</p><p className="text-sm text-gray-600">Order #{order.id}</p></div><span className={`px-3 py-1 rounded-full text-sm font-medium ${order.status === 'active' ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-700'}`}>{order.status}</span></div></div>)}</div>}
+                                    </div>
+                                )}
+                            </>
+                        )}
+                    </main>
+
+                    {selectedMess && <SubscriptionModal mess={selectedMess} onClose={() => setSelectedMess(null)} onConfirm={(data) => { setSubscriptionData(data); setSelectedMess(null); setShowPayment(true); }} />}
+                    {showPayment && <PaymentModal amount={subscriptionData?.price || 0} onClose={() => setShowPayment(false)} onSuccess={handlePaymentSuccess} />}
+                </div>
+            );
+        };
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
     </script>
 </body>
 </html>
