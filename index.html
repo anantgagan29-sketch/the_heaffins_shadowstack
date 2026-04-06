@@ -85,7 +85,7 @@
                     sellers: [],
                     sellerServices: []
                 };
-                localStorage.setItem('Store', JSON.stringify(defaultStore));
+              localStorage.setItem('tiffinBoxStore', JSON.stringify(defaultStore));
                 return defaultStore;
             }
             const store = JSON.parse(existingStore);
