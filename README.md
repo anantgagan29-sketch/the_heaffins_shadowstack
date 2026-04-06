@@ -3,6 +3,12 @@ Team: Shadow Stack
 
 The Heaffin is a web-based application designed to integrate daily meal planning with basic health tracking. The platform allows users to estimate their calorie requirements, log food intake, and receive a structured view of their daily nutrition. It also provides a simple mechanism to place tiffin orders based on nutritional needs.
 
+# Live Demo
+
+Try the application live:
+
+Link:- https://the-heaffins-shadowstack.vercel.app/
+
 ## Overview
 
 The project focuses on combining convenience with health awareness. Instead of separately tracking diet and ordering meals, users can manage both in one place. The system maintains a balance between usability and functionality, making it suitable for everyday use.
