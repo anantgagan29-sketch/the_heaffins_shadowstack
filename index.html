@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TiffinBox - Buyer/Seller Platform</title>
+    <title>The Heaffins - Buyer/Seller Platform</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
     <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
@@ -85,7 +85,7 @@
                     sellers: [],
                     sellerServices: []
                 };
-              localStorage.setItem('tiffinBoxStore', JSON.stringify(defaultStore));
+                localStorage.setItem('Store', JSON.stringify(defaultStore));
                 return defaultStore;
             }
             const store = JSON.parse(existingStore);
@@ -209,7 +209,7 @@
                             <div className="w-20 h-20 gradient-orange rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-xl shadow-orange-500/30">
                                 <Icon name="Utensils" size={40} className="text-white" />
                             </div>
-                            <h1 className="text-4xl font-bold text-gray-900 mb-2">TiffinBox</h1>
+                            <h1 className="text-4xl font-bold text-gray-900 mb-2">The Heaffins</h1>
                             <p className="text-gray-600">{initialRole === 'seller' ? 'Seller Portal' : 'Student Meal Platform'}</p>
                             <div className="mt-2 inline-flex items-center gap-2 px-3 py-1 bg-orange-100 rounded-full">
                                 <span className="w-2 h-2 rounded-full bg-orange-500"></span>
@@ -492,7 +492,7 @@
                                 <div className="flex items-center gap-8">
                                     <div className="flex items-center gap-2">
                                         <div className="w-10 h-10 gradient-orange rounded-xl flex items-center justify-center"><Icon name="Utensils" size={24} className="text-white" /></div>
-                                        <div><span className="text-xl font-bold text-gray-900">TiffinBox</span><span className="ml-2 px-2 py-0.5 bg-red-100 text-red-700 text-xs rounded-full font-medium">Seller</span></div>
+                                        <div><span className="text-xl font-bold text-gray-900">The Heaffins</span><span className="ml-2 px-2 py-0.5 bg-red-100 text-red-700 text-xs rounded-full font-medium">Seller</span></div>
                                     </div>
                                     <div className="hidden md:flex gap-1">
                                         <button onClick={() => setActiveTab('services')} className={`flex items-center gap-2 px-4 py-2 rounded-xl transition-all ${activeTab === 'services' ? "bg-orange-50 text-orange-600 font-medium" : "text-gray-600 hover:text-orange-500"}`}><Icon name="Building2" size={18} />My Services</button>
